@@ -16,27 +16,40 @@ final class WeatherController extends AbstractController
         requirements: ['city' => '[\p{L}\s\-]+', 'country' => '[A-Z]{2}']
     )]
 
-    public function city(
-        string $city,
-        ?string $country,
-        LocationRepository $locations,
-        MeasurementRepository $measurementsRepo
-    ): Response {
-        $criteria = ['city' => $city];
-        if ($country) {
-            $criteria['country'] = strtoupper($country);
-        }
-
-        $location = $locations->findOneBy($criteria);
-        if (!$location) {
-            throw $this->createNotFoundException('Location not found.');
-        }
-
-        $measurements = $measurementsRepo->findByLocation($location);
+//    public function city(
+//        string $city,
+//        ?string $country,
+//        LocationRepository $locations,
+//        MeasurementRepository $measurementsRepo
+//    ): Response {
+//        $criteria = ['city' => $city];
+//        if ($country) {
+//            $criteria['country'] = strtoupper($country);
+//        }
+//
+//        $location = $locations->findOneBy($criteria);
+//        if (!$location) {
+//            throw $this->createNotFoundException('Location not found.');
+//        }
+//
+//        $measurements = $measurementsRepo->findByLocation($location);
+//
+//        return $this->render('weather/city.html.twig', [
+//            'location'     => $location,
+//            'measurements' => $measurements,
+//        ]);
+//    }
+//
+    #[Route('/weather/{id}', name: 'app_weather', requirements: ['id' => '\d+'])]
+    public function city(Location $location, MeasurementRepository $repo): Response
+    {
+        // BEZ filtrowania na przyszłość – pokaż wszystko dla tej lokalizacji
+        $measurements = $repo->findBy(['location' => $location], ['measuredAt' => 'DESC']);
 
         return $this->render('weather/city.html.twig', [
-            'location'     => $location,
+            'location' => $location,
             'measurements' => $measurements,
         ]);
     }
+
 }

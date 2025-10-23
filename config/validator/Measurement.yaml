@@ -1,0 +1,17 @@
+App\Entity\Measurement:
+    properties:
+        date:
+            - NotNull: { message: 'Please enter date.', groups: ['create','edit'] }
+
+        celsius:
+            - NotNull: { message: 'Please enter temperature.', groups: ['create','edit'] }
+            - Type:    { type: numeric, message: 'Please enter a number.', groups: ['create','edit'] }
+            - Range:
+                  min: -100
+                  max: 100
+                  notInRangeMessage: 'Temperature must be between {{ min }} and {{ max }} °C.'
+                  groups: ['create','edit']
+
+        location:
+            - NotNull: { message: 'Please choose a location.', groups: ['create','edit'] }
+

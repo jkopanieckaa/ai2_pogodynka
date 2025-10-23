@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MeasurementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Location; // <-- IMPORT encji Location (DUŻE L), u góry pliku
 
 #[ORM\Entity(repositoryClass: MeasurementRepository::class)]
 class Measurement
@@ -16,11 +17,12 @@ class Measurement
 
     #[ORM\ManyToOne(inversedBy: 'measurements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?location $location = null;
+    private ?Location $location = null; // <-- typ encji Location
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date = null;
+    private ?\DateTimeInterface $date = null;
 
+    // Decimal w Doctrine przechowujemy jako string
     #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 0)]
     private ?string $celsius = null;
 
@@ -29,27 +31,25 @@ class Measurement
         return $this->id;
     }
 
-    public function getLocation(): ?location
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
 
-    public function setLocation(?location $location): static
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
-
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -58,10 +58,9 @@ class Measurement
         return $this->celsius;
     }
 
-    public function setCelsius(string $celsius): static
+    public function setCelsius(string $celsius): self
     {
         $this->celsius = $celsius;
-
         return $this;
     }
 }
